@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>โปรแกรมคำนวณรายจ่ายโครงการไทยช่วยไทยพลัส</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen w-screen bg-slate-50 flex flex-col justify-between overflow-y-auto p-3 sm:p-6">
+
+    <main class="w-full max-w-md mx-auto my-auto flex flex-col justify-center py-4">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+            
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white text-center relative">
+                <h1 class="text-lg font-bold">โครงการ ไทยช่วยไทย พลัส</h1>
+                <p class="text-xs opacity-80 mt-0.5">คำนวณรายจ่ายต่อวัน</p>
+            </div>
+
+            <div class="p-5 space-y-4">
+                
+                <p class="text-xs font-bold text-slate-500 text-center bg-slate-50 py-1.5 rounded-lg border border-slate-100">
+                    <i class="fa-solid fa-keyboard text-indigo-500 mr-1.5"></i> กรอกตัวเลขช่องใดก็ได้เพื่อคำนวณ
+                </p>
+
+                <div class="space-y-1.5">
+                    <label for="totalPrice" class="block text-sm font-bold text-slate-700 flex justify-between items-center">
+                        <span><i class="fa-solid fa-tag text-blue-600 mr-2"></i>ราคาสินค้า (100%)</span>
+                    </label>
+                    <div class="relative rounded-2xl shadow-sm">
+                        <input type="number" step="any" min="0" id="totalPrice" 
+                            inputmode="decimal" pattern="[0-9]*"
+                            class="block w-full pl-5 pr-14 py-3.5 text-xl sm:text-2xl font-bold text-slate-800 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all placeholder:text-slate-400" 
+                            placeholder="0.00">
+                        <div class="absolute inset-y-0 right-0 pr-5 flex items-center pointer-events-none">
+                            <span class="text-slate-400 text-sm font-bold">บาท</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label for="govShare" class="block text-sm font-bold text-slate-700 flex justify-between items-center">
+                        <span><i class="fa-solid fa-landmark text-emerald-600 mr-2"></i>รัฐช่วยจ่าย (60%)</span>
+                    </label>
+                    <div class="relative rounded-2xl shadow-sm">
+                        <input type="number" step="any" min="0" max="200" id="govShare" 
+                            inputmode="decimal" pattern="[0-9]*"
+                            class="block w-full pl-5 pr-14 py-3.5 text-xl sm:text-2xl font-bold text-emerald-700 bg-emerald-50/20 border-2 border-emerald-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all placeholder:text-emerald-400" 
+                            placeholder="0.00">
+                        <div class="absolute inset-y-0 right-0 pr-5 flex items-center pointer-events-none">
+                            <span class="text-emerald-600 text-sm font-bold">บาท</span>
+                        </div>
+                    </div>
+                    <div id="capNotice" class="hidden text-rose-500 text-xs font-bold mt-1.5 flex items-center justify-center gap-1 animate-pulse">
+                        <i class="fa-solid fa-triangle-exclamation"></i> 
+                        <span>จำกัด รัฐช่วยจ่ายสูงสุด 200 บาท/วัน</span>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label for="userShare" class="block text-sm font-bold text-slate-700 flex justify-between items-center">
+                        <span><i class="fa-solid fa-wallet text-amber-600 mr-2"></i>ประชาชนจ่ายเอง (40%)</span>
+                    </label>
+                    <div class="relative rounded-2xl shadow-sm">
+                        <input type="number" step="any" min="0" id="userShare" 
+                            inputmode="decimal" pattern="[0-9]*"
+                            class="block w-full pl-5 pr-14 py-3.5 text-xl sm:text-2xl font-bold text-amber-800 bg-amber-50/20 border-2 border-amber-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-amber-100 focus:border-amber-500 transition-all placeholder:text-amber-400" 
+                            placeholder="0.00">
+                        <div class="absolute inset-y-0 right-0 pr-5 flex items-center pointer-events-none">
+                            <span class="text-amber-600 text-sm font-bold">บาท</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
+                        <div id="barGov" class="h-full bg-emerald-400 transition-all duration-300" style="width: 60%"></div>
+                        <div id="barUser" class="h-full bg-amber-400 transition-all duration-300" style="width: 40%"></div>
+                    </div>
+                </div>
+
+                <button type="button" id="btnReset" 
+                    class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 text-sm font-bold rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 border border-slate-200">
+                    <i class="fa-solid fa-rotate-left"></i> ล้างค่าทั้งหมด
+                </button>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full max-w-md mx-auto bg-slate-100/90 rounded-2xl p-3.5 text-xs text-slate-500 border border-slate-200/50 mb-2">
+        <div class="font-bold text-slate-700 mb-1.5 border-b border-slate-200 pb-1 flex items-center gap-1.5 text-[13px]">
+            <i class="fa-solid fa-circle-info text-blue-500"></i>
+            <span>เงื่อนไข :</span>
+        </div>
+        <ul class="space-y-1 list-none pl-1 text-slate-600 font-medium text-[11px] sm:text-xs">
+            <li class="flex items-start gap-1">
+                <span class="text-blue-500">•</span>
+                <span>รัฐช่วยจ่าย 60% ประชาชนจ่ายเอง 40%</span>
+            </li>
+            <li class="flex items-start gap-1">
+                <span class="text-blue-500">•</span>
+                <span>จำกัดวงเงินรัฐช่วยจ่ายสูงสุดไม่เกิน 200 บาทต่อวัน</span>
+            </li>
+            <li class="flex items-start gap-1">
+                <span class="text-blue-500">•</span>
+                <span>ได้วงเงิน 1,000 บาท ต่อคนต่อเดือน (รวม 4,000 บาท ตลอดโครงการ)</span>
+            </li>
+            <li class="flex items-start gap-1">
+                <span class="text-blue-500">•</span>
+                <span>ตัดยอดทุกสิ้นเดือน (ใช้ไม่หมดไม่ทบ)</span>
+            </li>
+            <li class="flex items-start gap-1">
+                <span class="text-blue-500">•</span>
+                <span>ระยะเวลาโครงการ 1 มิ.ย. – 30 ก.ย. 69</span>
+            </li>
+            <li class="flex items-start gap-1">
+                <span class="text-blue-500">•</span>
+                <span>เวลาที่ใช้สิทธิได้ 06.00 – 23.00 น.</span>
+            </li>
+        </ul>
+        <div class="mt-2.5 pt-2 border-t border-slate-200 text-center font-bold text-slate-600 flex items-center justify-center gap-1 text-[11px] sm:text-xs">
+            <i class="fa-brands fa-facebook text-blue-600 text-sm"></i>
+            <span>พัฒนาโดย FB : แวะกลางทาง</span>
+        </div>
+    </footer>
+
+    <script>
+        const totalPriceInput = document.getElementById('totalPrice');
+        const govShareInput = document.getElementById('govShare');
+        const userShareInput = document.getElementById('userShare');
+        const btnReset = document.getElementById('btnReset');
+        const capNotice = document.getElementById('capNotice');
+        const barGov = document.getElementById('barGov');
+        const barUser = document.getElementById('barUser');
+
+        // Update visual distribution bar based on actual calculated values
+        function updateVisuals(gov, user, total) {
+            if (total > 0) {
+                const govPercent = (gov / total) * 100;
+                const userPercent = (user / total) * 100;
+                barGov.style.width = `${govPercent}%`;
+                barUser.style.width = `${userPercent}%`;
+            } else {
+                barGov.style.width = '60%';
+                barUser.style.width = '40%';
+            }
+
+            // Show cap alert if government subsidy reaches 200 Baht max
+            if (gov >= 200) {
+                capNotice.classList.remove('hidden');
+            } else {
+                capNotice.classList.add('hidden');
+            }
+        }
+
+        // Logic Functions
+        function calculateFromPrice() {
+            const price = parseFloat(totalPriceInput.value);
+            if (isNaN(price) || price <= 0) {
+                clearCalculationsExcept(totalPriceInput);
+                updateVisuals(0, 0, 0);
+                return;
+            }
+            
+            let gov = price * 0.6;
+            if (gov > 200) {
+                gov = 200; // Limit at max 200 Baht
+            }
+            const user = price - gov;
+
+            govShareInput.value = gov.toFixed(2);
+            userShareInput.value = user.toFixed(2);
+            updateVisuals(gov, user, price);
+        }
+
+        // Handle Gov input calculation with limit check
+        function calculateFromGov() {
+            let gov = parseFloat(govShareInput.value);
+            if (isNaN(gov) || gov <= 0) {
+                clearCalculationsExcept(govShareInput);
+                updateVisuals(0, 0, 0);
+                return;
+            }
+
+            // If user enters more than 200, force clamp to 200
+            if (gov > 200) {
+                gov = 200;
+                govShareInput.value = '200.00';
+            }
+
+            const price = gov / 0.6;
+            const user = price - gov;
+
+            totalPriceInput.value = price.toFixed(2);
+            userShareInput.value = user.toFixed(2);
+            updateVisuals(gov, user, price);
+        }
+
+        // Handle User input calculation taking cap of 200 into account
+        function calculateFromUser() {
+            const user = parseFloat(userShareInput.value);
+            if (isNaN(user) || user <= 0) {
+                clearCalculationsExcept(userShareInput);
+                updateVisuals(0, 0, 0);
+                return;
+            }
+
+            let price, gov;
+            // 133.33 is the threshold where user pays exactly 40% when government pays 200 max.
+            // (133.33 + 200 = 333.33 total price)
+            if (user <= 133.3333) {
+                price = user / 0.4;
+                gov = price * 0.6;
+            } else {
+                gov = 200; // Government is capped
+                price = user + 200; // User pays the rest
+            }
+
+            totalPriceInput.value = price.toFixed(2);
+            govShareInput.value = gov.toFixed(2);
+            updateVisuals(gov, user, price);
+        }
+
+        function clearCalculationsExcept(activeInput) {
+            if (activeInput !== totalPriceInput) totalPriceInput.value = '';
+            if (activeInput !== govShareInput) govShareInput.value = '';
+            if (activeInput !== userShareInput) userShareInput.value = '';
+        }
+
+        // Input Event Listeners
+        totalPriceInput.addEventListener('input', () => {
+            if (document.activeElement === totalPriceInput) {
+                calculateFromPrice();
+            }
+        });
+
+        govShareInput.addEventListener('input', () => {
+            if (document.activeElement === govShareInput) {
+                calculateFromGov();
+            }
+        });
+
+        userShareInput.addEventListener('input', () => {
+            if (document.activeElement === userShareInput) {
+                calculateFromUser();
+            }
+        });
+
+        // Reset Event Listener
+        btnReset.addEventListener('click', () => {
+            totalPriceInput.value = '';
+            govShareInput.value = '';
+            userShareInput.value = '';
+            updateVisuals(0, 0, 0);
+        });
+    </script>
+</body>
+</html>
